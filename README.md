@@ -1,16 +1,14 @@
-# kp_music
+# AudioVibe
 
-A new Flutter project.
+With the help of just_audio and Youtube Explode, the music software AudioVibe can improve your listening experience.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- A better experience with music.
+- Large library as a result of YouTube's explode.
+- User-Friendly Interface.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Screenshots
+![](https://github.com/kratikpal/kp_music/assets/38353446/3e0afc0d-d241-49db-8adc-9f0c23030e67)
+![](https://github.com/kratikpal/Kp_chat/assets/38353446/0740364e-937d-4c77-9822-b8b8d22d43c9)
