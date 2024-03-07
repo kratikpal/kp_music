@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:kp_music/screen/search_screen.dart';
@@ -57,7 +58,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     }),
                   );
                 },
-              )
+              ),
+              IconButton(
+                onPressed: () {
+                  FirebaseAuth.instance.signOut();
+                },
+                icon: const Icon(Icons.logout_rounded),
+              ),
             ],
           ),
         ],
@@ -65,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             for (int index = 0; index < playListIds.length; index++)
               SizedBox(
-                height: 250,
+                height: 260,
                 child: SongList(
                   playListId: playListIds[index],
                   audioPlayer: widget.audioPlayer,

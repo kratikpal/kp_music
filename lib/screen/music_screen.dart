@@ -58,33 +58,6 @@ class _MusicScreenState extends State<MusicScreen> {
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
 
-  // Future<void> _play() async {
-  //   if (widget.audioPlayer.playing) {
-  //     widget.audioPlayer.stop();
-  //   }
-  //   var yt = YoutubeExplode();
-  //   var manifest =
-  //       await yt.videos.streamsClient.getManifest(widget.video.id.value);
-  //   var audio = manifest.audioOnly.withHighestBitrate();
-  //   var audioSource = AudioSource.uri(
-  //     audio.url,
-  //     tag: MediaItem(
-  //       // Specify a unique ID for each media item:
-  //       id: widget.video.id.value,
-  //       // Metadata to display in the notification:
-  //       album: widget.video.author,
-  //       title: widget.video.title,
-  //       artUri: Uri.parse(widget.video.thumbnails.mediumResUrl),
-  //     ),
-  //   );
-  //   widget.audioPlayer.setAudioSource(audioSource);
-  //   widget.audioPlayer.play();
-  //   setState(() {
-  //     isPlaying = true;
-  //   });
-  //   widget.updateMiniPlayer(widget.video);
-  // }
-
   String _formatDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     String minutes = twoDigits(duration.inMinutes.remainder(60));
@@ -95,7 +68,6 @@ class _MusicScreenState extends State<MusicScreen> {
   @override
   void initState() {
     super.initState();
-    // _play();
 
     widget.audioPlayer.playerStateStream.listen((event) {
       if (event.playing) {
@@ -137,6 +109,10 @@ class _MusicScreenState extends State<MusicScreen> {
           child: Image.network(
             widget.video.thumbnails.maxResUrl,
             fit: BoxFit.fill,
+            errorBuilder: (context, error, stackTrace) => Image.asset(
+              'assets/images/music.jpg',
+              fit: BoxFit.fill,
+            ),
           ),
         ),
         Scaffold(
@@ -161,6 +137,11 @@ class _MusicScreenState extends State<MusicScreen> {
                       placeholder: MemoryImage(kTransparentImage),
                       image: NetworkImage(widget.video.thumbnails.maxResUrl),
                       fit: BoxFit.cover,
+                      imageErrorBuilder: (context, error, stackTrace) =>
+                          Image.asset(
+                        'assets/images/music.jpg',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   Text(widget.video.title),

@@ -52,6 +52,13 @@ class _SearchScreenState extends State<SearchScreen> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     labelText: 'Search',
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        _srarchController.clear();
+                      },
+                      icon: const Icon(Icons.close),
+                    ),
+                    suffixIconColor: Theme.of(context).colorScheme.primary,
                   ),
                   onChanged: (value) => _search(value),
                   onFieldSubmitted: (value) => _search(value),

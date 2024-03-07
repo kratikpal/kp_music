@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:kp_music/widget/shimmer_widget.dart';
 import 'package:kp_music/widget/song_card.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -22,6 +23,7 @@ class SongList extends StatefulWidget {
 class _SongListState extends State<SongList> {
   List<Video> searchResult = [];
   Playlist? playlist;
+  bool isLoading = true;
 
   Future<void> _getPlayList() async {
     var yt = YoutubeExplode();
@@ -30,7 +32,9 @@ class _SongListState extends State<SongList> {
     await for (var video in yt.playlists.getVideos(playlist!.id)) {
       searchResult.add(video);
     }
-    setState(() {});
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -41,8 +45,9 @@ class _SongListState extends State<SongList> {
 
   @override
   Widget build(BuildContext context) {
-    return playlist != null
-        ? Column(
+    return isLoading
+        ? const ShimmerWidget()
+        : Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
@@ -53,7 +58,7 @@ class _SongListState extends State<SongList> {
                 ),
               ),
               SizedBox(
-                height: 180,
+                height: 200,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: searchResult.length,
@@ -65,7 +70,6 @@ class _SongListState extends State<SongList> {
                 ),
               ),
             ],
-          )
-        : Container();
+          );
   }
 }
