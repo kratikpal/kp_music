@@ -2,7 +2,7 @@
 
 With the help of just_audio and Youtube Explode, the music software AudioVibe can improve your listening experience.
 
-### [Download Now](https://drive.google.com/file/d/1qYt3wiUQfRadHVKC0xl4BIDEl6EVUFQ6/view?usp=sharing)
+### [Download Now](https://drive.google.com/file/d/1qYt3wiUQfRadHVKC0xl4BIDEl6EVUFQ6/view?usp=drive_link)
 
 ## Features
 

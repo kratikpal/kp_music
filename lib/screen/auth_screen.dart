@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
 
@@ -14,21 +15,22 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   final _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
-  bool _isAuthenticating = false;
-  var _enterdMobileNumber = '';
+  bool _isAuthenticatingWithMobile = false;
+  bool _isAuthenticatingWithGoogle = false;
+  var _enteredMobileNumber = '';
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
     FocusScope.of(context).unfocus();
-    setState(() => _isAuthenticating = true);
+    setState(() => _isAuthenticatingWithMobile = true);
     _formKey.currentState!.save();
     await _auth.verifyPhoneNumber(
-      phoneNumber: "+91$_enterdMobileNumber",
+      phoneNumber: "+91$_enteredMobileNumber",
       verificationCompleted: (phoneAuthCredential) {},
       verificationFailed: (error) {
-        setState(() => _isAuthenticating = false);
+        setState(() => _isAuthenticatingWithMobile = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -83,7 +85,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                     );
                   }
-                  setState(() => _isAuthenticating = false);
+                  setState(() => _isAuthenticatingWithMobile = false);
                 },
               ),
             );
@@ -92,6 +94,33 @@ class _AuthScreenState extends State<AuthScreen> {
       },
       codeAutoRetrievalTimeout: (verificationId) {},
     );
+  }
+
+  Future<void> _signInWithGoogle() async {
+    try {
+      setState(() => _isAuthenticatingWithGoogle = true);
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser != null) {
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+        await _auth.signInWithCredential(credential);
+        // Proceed with your application logic after signing in with Google
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '$e',
+          ),
+        ),
+      );
+    } finally {
+      setState(() => _isAuthenticatingWithGoogle = false);
+    }
   }
 
   @override
@@ -109,7 +138,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 children: [
                   Text(
                     "Welcome",
-                    style: Theme.of(context).textTheme.headlineMedium,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   TextFormField(
                     decoration: const InputDecoration(
@@ -127,17 +156,31 @@ class _AuthScreenState extends State<AuthScreen> {
                       }
                       return null;
                     },
-                    onSaved: (newValue) => _enterdMobileNumber = newValue!,
+                    onSaved: (newValue) => _enteredMobileNumber = newValue!,
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _submit,
-                    child: _isAuthenticating
+                    child: _isAuthenticatingWithMobile
                         ? const CircularProgressIndicator()
                         : const Text(
                             "Verify",
                           ),
-                  )
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "or",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: _signInWithGoogle,
+                    child: _isAuthenticatingWithGoogle
+                        ? const CircularProgressIndicator()
+                        : const Text(
+                            "Sign in with Google",
+                          ),
+                  ),
                 ],
               ),
             ),
