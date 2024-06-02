@@ -1,5 +1,5 @@
 # AudioVibe
-AudioVibe is a music streaming application designed to enhance your music listening experience. Built with Flutter and Dart, it leverages the power of REST APIs, YouTube Explode, and Just_audio to provide a seamless and uninterrupted music experience. With a user-friendly interface and a vast music library sourced from YouTube, AudioVibe ensures you have access to all your favorite tunes and 
+AudioVibe is a music streaming application designed to enhance your music listening experience. The app offers a user-friendly interface and a vast music library sourced from YouTube, ensuring you have access to all your favorite tunes without any ads. It features various music categories, including Bollywood Hitlist, Trending 20, and Retro, catering to diverse musical tastes and preferences. Built with Flutter and Dart, AudioVibe leverages the power of REST APIs, YouTube Explode, and Just_audio to provide a seamless and uninterrupted music experience.
 
 ## How to Use
 
