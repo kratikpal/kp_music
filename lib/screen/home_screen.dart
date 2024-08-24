@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:kp_music/screen/search_screen.dart';
 import 'package:kp_music/widget/mini_player.dart';
 import 'package:kp_music/widget/song_list.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-class HomeScreen extends StatefulWidget {
+import '../providers/video_provider.dart';
+
+class HomeScreen extends ConsumerStatefulWidget {
   final AudioPlayer audioPlayer;
   const HomeScreen({required this.audioPlayer, Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  Video? video;
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  // Video? video;
   List<String> playListIds = [
     "RDCLAK5uy_n9Fbdw7e6ap-98_A-8JYBmPv64v-Uaq1g",
     "PL_yIBWagYVjwYmv3PlwYk0b4vmaaHX6aL",
@@ -23,20 +25,21 @@ class _HomeScreenState extends State<HomeScreen> {
     "RDCLAK5uy_kiDNaS5nAXxdzsqFElFKKKs0GUEFJE26w",
   ];
 
-  void _updateMiniPlayer(Video vid) {
-    setState(() {
-      video = vid;
-    });
-  }
+  // void _updateMiniPlayer(Video vid) {
+  //   setState(() {
+  //     video = vid;
+  //   });
+  // }
 
   @override
   void initState() {
-    video = null;
+    // video = null;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final video = ref.watch(videoProvider);
     return Scaffold(
       body: NestedScrollView(
         floatHeaderSlivers: true,
@@ -52,7 +55,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     MaterialPageRoute(builder: (context) {
                       return SearchScreen(
                         audioPlayer: widget.audioPlayer,
-                        updateMiniPlayer: _updateMiniPlayer,
                       );
                     }),
                   );
@@ -69,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: SongList(
                   playListId: playListIds[index],
                   audioPlayer: widget.audioPlayer,
-                  updateMiniPlayer: _updateMiniPlayer,
+                  // updateMiniPlayer: _updateMiniPlayer,
                 ),
               ),
           ],
@@ -78,8 +80,6 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: video != null
           ? MiniPlayer(
               audioPlayer: widget.audioPlayer,
-              video: video,
-              updateMiniPlayer: _updateMiniPlayer,
             )
           : null,
     );

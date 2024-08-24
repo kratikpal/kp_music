@@ -1,26 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
+import '../providers/video_provider.dart';
 import '../screen/music_screen.dart';
 
-class MiniPlayer extends StatefulWidget {
+class MiniPlayer extends ConsumerStatefulWidget {
   final AudioPlayer audioPlayer;
-  final Video? video;
-  final Function updateMiniPlayer;
 
   const MiniPlayer({
     required this.audioPlayer,
-    required this.video,
-    required this.updateMiniPlayer,
     super.key,
   });
 
   @override
-  State<MiniPlayer> createState() => _MiniPlayerState();
+  ConsumerState<MiniPlayer> createState() => _MiniPlayerState();
 }
 
-class _MiniPlayerState extends State<MiniPlayer> {
+class _MiniPlayerState extends ConsumerState<MiniPlayer> {
   bool isPlaying = false;
 
   @override
@@ -42,15 +39,14 @@ class _MiniPlayerState extends State<MiniPlayer> {
 
   @override
   Widget build(BuildContext context) {
+    final video = ref.watch(videoProvider);
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => MusicScreen(
-              video: widget.video!,
               audioPlayer: widget.audioPlayer,
-              updateMiniPlayer: widget.updateMiniPlayer,
             ),
           ),
         );
@@ -64,9 +60,9 @@ class _MiniPlayerState extends State<MiniPlayer> {
             Row(
               children: [
                 Hero(
-                  tag: widget.video!.id.value,
+                  tag: video!.id.value,
                   child: Image.network(
-                    widget.video!.thumbnails.maxResUrl,
+                    video.thumbnails.maxResUrl,
                     width: 60,
                     height: 48,
                   ),
@@ -77,13 +73,13 @@ class _MiniPlayerState extends State<MiniPlayer> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.video!.title,
+                        video.title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        widget.video!.author,
+                        video.author,
                         style: const TextStyle(color: Colors.grey),
                       ),
                     ],

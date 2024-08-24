@@ -1,16 +1,32 @@
-# kp_music
+# AudioVibe
 
-A new Flutter project.
+AudioVibe is a music streaming application designed to enhance your music listening experience. The app offers a user-friendly interface and a vast music library sourced from YouTube, ensuring you have access to all your favorite tunes without any ads. It features various music categories, including Bollywood Hitlist, Trending 20, and Retro, catering to diverse musical tastes and preferences. Built with Flutter and Dart, AudioVibe leverages the power of REST APIs, YouTube Explode, and Just_audio to provide a seamless and uninterrupted music experience.
 
-## Getting Started
+## How to Use
 
-This project is a starting point for a Flutter application.
+- [Download](https://drive.google.com/file/d/1qYt3wiUQfRadHVKC0xl4BIDEl6EVUFQ6/view?usp=drive_link) the app.
+- Open AudioVibe and search for your favorite track or browse through the curated categories on the home screen.
+- Experience uninterrupted music playback.
 
-A few resources to get you started if this is your first Flutter project:
+## Features
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Large Music Library: Access an extensive library of music sourced from YouTube, ensuring you have a vast selection of tracks at your fingertips.
+- No Ads: Enjoy your music without any interruptions from ads.
+- User-Friendly Interface: AudioVibe offers an intuitive and visually appealing interface, making it easy for users to navigate and enjoy their favorite tunes.
+- Music Categories:
+  - Bollywood Hitlist: Enjoy the latest and greatest hits from Bollywood.
+  - Trending 20: Stay up-to-date with the top 20 trending songs.
+  - Retro: Take a trip down memory lane with classic hits
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Screenshots
+
+<img src="https://github.com/kratikpal/kp_music/assets/38353446/3e0afc0d-d241-49db-8adc-9f0c23030e67"  width="500" height="900">
+<img src="https://github.com/kratikpal/Kp_chat/assets/38353446/0740364e-937d-4c77-9822-b8b8d22d43c9" alt="Chat Screen" width="500" height="900">
+
+## Technologies Used
+
+- Flutter: Utilized for building the app's user-friendly and responsive interface.
+- Dart: The primary programming language used for developing the application.
+- Just_audio: Ensures seamless and uninterrupted music playback.
+- YouTube Explode: Used to fetch a large library of music from YouTube.
+- Riverpod: Used for efficient state management, enhancing the overall user experience.

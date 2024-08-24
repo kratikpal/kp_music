@@ -1,32 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:kp_music/screen/music_screen.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-class SongCard extends StatelessWidget {
+import '../providers/video_provider.dart';
+
+class SongCard extends ConsumerWidget {
   final Video video;
   final AudioPlayer audioPlayer;
-  final Function updateMiniPlayer;
-  const SongCard(
-      {required this.video,
-      required this.audioPlayer,
-      required this.updateMiniPlayer,
-      super.key});
+  const SongCard({required this.video, required this.audioPlayer, super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 0, 0, 0),
       child: GestureDetector(
         onTap: () {
+          ref.read(videoProvider.notifier).updateVideo(video);
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => MusicScreen.play(
-                  video: video,
-                  audioPlayer: audioPlayer,
-                  updateMiniPlayer: updateMiniPlayer),
+                audioPlayer: audioPlayer,
+              ),
             ),
           );
         },

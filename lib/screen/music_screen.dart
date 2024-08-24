@@ -1,34 +1,43 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-class MusicScreen extends StatefulWidget {
-  final Video video;
+import '../providers/video_provider.dart';
+
+class MusicScreen extends ConsumerStatefulWidget {
   final AudioPlayer audioPlayer;
-  final Function updateMiniPlayer;
+  final bool isPlay;
 
   const MusicScreen({
-    required this.video,
     required this.audioPlayer,
-    required this.updateMiniPlayer,
     super.key,
-  });
+  }) : isPlay = false;
 
-  MusicScreen.play(
-      {required this.video,
-      required this.audioPlayer,
-      required this.updateMiniPlayer,
-      super.key}) {
-    _play();
-  }
+  const MusicScreen.play({
+    required this.audioPlayer,
+    super.key,
+  }) : isPlay = true;
+
+  @override
+  ConsumerState<MusicScreen> createState() => _MusicScreenState();
+}
+
+class _MusicScreenState extends ConsumerState<MusicScreen> {
+  Duration duration = Duration.zero;
+  Duration position = Duration.zero;
 
   Future<void> _play() async {
-    if (audioPlayer.playing) {
-      audioPlayer.stop();
+    final video = ref.read(videoProvider);
+    if (video == null) {
+      return;
+    }
+    if (widget.audioPlayer.playing) {
+      widget.audioPlayer.stop();
     }
     var yt = YoutubeExplode();
     var manifest = await yt.videos.streamsClient.getManifest(video.id.value);
@@ -44,46 +53,10 @@ class MusicScreen extends StatefulWidget {
         artUri: Uri.parse(video.thumbnails.mediumResUrl),
       ),
     );
-    audioPlayer.setAudioSource(audioSource);
-    audioPlayer.play();
-    updateMiniPlayer(video);
+    widget.audioPlayer.setAudioSource(audioSource);
+    widget.audioPlayer.play();
+    // updateMiniPlayer(video!);
   }
-
-  @override
-  State<MusicScreen> createState() => _MusicScreenState();
-}
-
-class _MusicScreenState extends State<MusicScreen> {
-  late bool isPlaying;
-  Duration duration = Duration.zero;
-  Duration position = Duration.zero;
-
-  // Future<void> _play() async {
-  //   if (widget.audioPlayer.playing) {
-  //     widget.audioPlayer.stop();
-  //   }
-  //   var yt = YoutubeExplode();
-  //   var manifest =
-  //       await yt.videos.streamsClient.getManifest(widget.video.id.value);
-  //   var audio = manifest.audioOnly.withHighestBitrate();
-  //   var audioSource = AudioSource.uri(
-  //     audio.url,
-  //     tag: MediaItem(
-  //       // Specify a unique ID for each media item:
-  //       id: widget.video.id.value,
-  //       // Metadata to display in the notification:
-  //       album: widget.video.author,
-  //       title: widget.video.title,
-  //       artUri: Uri.parse(widget.video.thumbnails.mediumResUrl),
-  //     ),
-  //   );
-  //   widget.audioPlayer.setAudioSource(audioSource);
-  //   widget.audioPlayer.play();
-  //   setState(() {
-  //     isPlaying = true;
-  //   });
-  //   widget.updateMiniPlayer(widget.video);
-  // }
 
   String _formatDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
@@ -95,19 +68,10 @@ class _MusicScreenState extends State<MusicScreen> {
   @override
   void initState() {
     super.initState();
-    // _play();
 
-    widget.audioPlayer.playerStateStream.listen((event) {
-      if (event.playing) {
-        setState(() {
-          isPlaying = true;
-        });
-      } else {
-        setState(() {
-          isPlaying = false;
-        });
-      }
-    });
+    if (widget.isPlay) {
+      _play();
+    }
 
     widget.audioPlayer.positionStream.listen((event) {
       setState(() {
@@ -116,8 +80,11 @@ class _MusicScreenState extends State<MusicScreen> {
     });
 
     widget.audioPlayer.durationStream.listen((event) {
+      if (event == null) {
+        return;
+      }
       setState(() {
-        duration = event!;
+        duration = event;
       });
     });
   }
@@ -129,13 +96,14 @@ class _MusicScreenState extends State<MusicScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final video = ref.watch(videoProvider);
     return Stack(
       fit: StackFit.expand,
       children: [
         ImageFiltered(
           imageFilter: ImageFilter.blur(sigmaX: 3, sigmaY: 5),
           child: Image.network(
-            widget.video.thumbnails.maxResUrl,
+            video!.thumbnails.maxResUrl,
             fit: BoxFit.fill,
           ),
         ),
@@ -156,14 +124,14 @@ class _MusicScreenState extends State<MusicScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Hero(
-                    tag: widget.video.id.value,
+                    tag: video.id.value,
                     child: FadeInImage(
                       placeholder: MemoryImage(kTransparentImage),
-                      image: NetworkImage(widget.video.thumbnails.maxResUrl),
+                      image: NetworkImage(video.thumbnails.maxResUrl),
                       fit: BoxFit.cover,
                     ),
                   ),
-                  Text(widget.video.title),
+                  Text(video.title),
                   Slider(
                     min: 0,
                     max: duration.inSeconds.toDouble(),
@@ -184,32 +152,47 @@ class _MusicScreenState extends State<MusicScreen> {
                       ),
                     ],
                   ),
-                  IconButton(
-                    iconSize: 50,
-                    onPressed: () {
-                      if (isPlaying) {
-                        widget.audioPlayer.pause();
-                      } else {
-                        widget.audioPlayer.play();
-                      }
-                    },
-                    icon: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 200),
-                      transitionBuilder: (child, animation) =>
-                          RotationTransition(
-                        turns: Tween<double>(begin: 0.7, end: 1)
-                            .animate(animation),
-                        child: child,
-                      ),
-                      child: Icon(
-                        isPlaying ? Icons.pause : Icons.play_arrow,
-                        key: ValueKey(isPlaying),
-                      ),
+                  SizedBox(
+                    height: 50,
+                    child: StreamBuilder<PlayerState>(
+                      stream: widget.audioPlayer.playerStateStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.data!.processingState ==
+                                ProcessingState.loading ||
+                            snapshot.data!.processingState ==
+                                ProcessingState.buffering) {
+                          return IconButton(
+                            onPressed: () {},
+                            iconSize: 50,
+                            icon: const CircularProgressIndicator(),
+                          );
+                        }
+                        return IconButton(
+                          iconSize: 50,
+                          onPressed: () {
+                            if (snapshot.data!.playing) {
+                              widget.audioPlayer.pause();
+                            } else {
+                              widget.audioPlayer.play();
+                            }
+                          },
+                          icon: Icon(
+                            snapshot.data!.playing
+                                ? Icons.pause
+                                : Icons.play_arrow,
+                            key: ValueKey(snapshot.data!.playing),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],
               ),
             ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {},
+            child: const Icon(Icons.download),
           ),
         ),
       ],
