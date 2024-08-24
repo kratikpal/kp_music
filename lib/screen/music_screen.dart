@@ -105,6 +105,10 @@ class _MusicScreenState extends ConsumerState<MusicScreen> {
           child: Image.network(
             video!.thumbnails.maxResUrl,
             fit: BoxFit.fill,
+            errorBuilder: (context, error, stackTrace) => Image.asset(
+              'assets/images/music.jpg',
+              fit: BoxFit.fill,
+            ),
           ),
         ),
         Scaffold(
@@ -129,6 +133,11 @@ class _MusicScreenState extends ConsumerState<MusicScreen> {
                       placeholder: MemoryImage(kTransparentImage),
                       image: NetworkImage(video.thumbnails.maxResUrl),
                       fit: BoxFit.cover,
+                      imageErrorBuilder: (context, error, stackTrace) =>
+                          Image.asset(
+                        'assets/images/music.jpg',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   Text(video.title),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:kp_music/providers/queue_provider.dart';
+import 'package:kp_music/widget/shimmer_widget.dart';
 import 'package:kp_music/widget/song_card.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -23,6 +24,7 @@ class SongList extends ConsumerStatefulWidget {
 class _SongListState extends ConsumerState<SongList> {
   List<Video> searchResult = [];
   Playlist? playlist;
+
   bool isPlaylistLoading = false;
 
   void _playAll() async {
@@ -54,6 +56,7 @@ class _SongListState extends ConsumerState<SongList> {
     setState(() => isPlaylistLoading = false);
     // widget.updateMiniPlayer(searchResult[0]);
   }
+  bool isLoading = true;
 
   Future<void> _getPlayList() async {
     var yt = YoutubeExplode();
@@ -62,7 +65,9 @@ class _SongListState extends ConsumerState<SongList> {
     await for (var video in yt.playlists.getVideos(playlist!.id)) {
       searchResult.add(video);
     }
-    setState(() {});
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -73,8 +78,9 @@ class _SongListState extends ConsumerState<SongList> {
 
   @override
   Widget build(BuildContext context) {
-    return playlist != null
-        ? Column(
+    return isLoading
+        ? const ShimmerWidget()
+        : Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
@@ -100,7 +106,7 @@ class _SongListState extends ConsumerState<SongList> {
                 ),
               ),
               SizedBox(
-                height: 180,
+                height: 200,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: searchResult.length,
@@ -111,7 +117,6 @@ class _SongListState extends ConsumerState<SongList> {
                 ),
               ),
             ],
-          )
-        : Container();
+          );
   }
 }

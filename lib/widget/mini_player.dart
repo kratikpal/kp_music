@@ -65,6 +65,11 @@ class _MiniPlayerState extends ConsumerState<MiniPlayer> {
                     video.thumbnails.maxResUrl,
                     width: 60,
                     height: 48,
+                    errorBuilder: (context, error, stackTrace) => Image.asset(
+                      'assets/images/music.jpg',
+                      width: 60,
+                      height: 48,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),

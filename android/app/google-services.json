@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "478218575654",
+    "project_id": "kpmusic-5514c",
+    "storage_bucket": "kpmusic-5514c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:478218575654:android:1e2d5f6382bc25caab2be7",
+        "android_client_info": {
+          "package_name": "com.example.kp_music"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "478218575654-mm8d4f50v9lb1r23pr33m7hh75l8l0ij.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kp_music",
+            "certificate_hash": "da58c3af05eec20849ea2e2dcfebdf636207c31e"
+          }
+        },
+        {
+          "client_id": "478218575654-ab0vgu6b2e8rd9iplgp6v9oj2ne13fgd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3FSQ0gQ-hHJ0yUpTxDECfxXqShyWVtEw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "478218575654-ab0vgu6b2e8rd9iplgp6v9oj2ne13fgd.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "478218575654-8jgabti6dv1ippiirk7lej5t4g1447ss.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.kpMusic"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
