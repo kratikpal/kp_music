@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:kp_music/providers/video_provider.dart';
 import 'package:kp_music/screen/music_screen.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-class SearchWidget extends StatelessWidget {
+class SearchWidget extends ConsumerWidget {
   final List<Video> searchResult;
   final AudioPlayer audioPlayer;
-  final Function updateMiniPlayer;
 
   const SearchWidget({
     Key? key,
     required this.searchResult,
     required this.audioPlayer,
-    required this.updateMiniPlayer,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return searchResult.isNotEmpty
         ? Expanded(
             child: ListView.builder(
@@ -27,13 +27,13 @@ class SearchWidget extends StatelessWidget {
                 final result = searchResult[index];
                 return GestureDetector(
                   onTap: () {
+                    ref.read(videoProvider.notifier).updateVideo(result);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => MusicScreen.play(
-                          video: result,
                           audioPlayer: audioPlayer,
-                          updateMiniPlayer: updateMiniPlayer,
+                          // updateMiniPlayer: updateMiniPlayer,
                         ),
                       ),
                     );

@@ -5,10 +5,9 @@ import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class SearchScreen extends StatefulWidget {
   final AudioPlayer audioPlayer;
-  final Function updateMiniPlayer;
+  // final Function updateMiniPlayer;
 
-  const SearchScreen(
-      {super.key, required this.audioPlayer, required this.updateMiniPlayer});
+  const SearchScreen({super.key, required this.audioPlayer});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -67,7 +66,7 @@ class _SearchScreenState extends State<SearchScreen> {
               SearchWidget(
                 searchResult: searchResult,
                 audioPlayer: widget.audioPlayer,
-                updateMiniPlayer: widget.updateMiniPlayer,
+                // updateMiniPlayer: widget.updateMiniPlayer,
               ),
             ],
           ),
