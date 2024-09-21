@@ -14,8 +14,8 @@ class SongList extends ConsumerStatefulWidget {
   const SongList({
     required this.playListId,
     required this.audioPlayer,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   ConsumerState<SongList> createState() => _SongListState();
@@ -56,6 +56,7 @@ class _SongListState extends ConsumerState<SongList> {
     setState(() => isPlaylistLoading = false);
     // widget.updateMiniPlayer(searchResult[0]);
   }
+
   bool isLoading = true;
 
   Future<void> _getPlayList() async {
@@ -65,9 +66,11 @@ class _SongListState extends ConsumerState<SongList> {
     await for (var video in yt.playlists.getVideos(playlist!.id)) {
       searchResult.add(video);
     }
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -85,24 +88,9 @@ class _SongListState extends ConsumerState<SongList> {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      playlist!.title,
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                    TextButton(
-                      onPressed: _playAll,
-                      child: isPlaylistLoading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(),
-                            )
-                          : const Text("Play All"),
-                    ),
-                  ],
+                child: Text(
+                  playlist!.title,
+                  style: const TextStyle(fontSize: 20),
                 ),
               ),
               SizedBox(

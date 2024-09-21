@@ -1,16 +1,22 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:kp_music/providers/auth_provider.dart';
+import 'package:kp_music/providers/user_provider.dart';
+import 'package:kp_music/screen/auth_screen.dart';
 import 'package:kp_music/screen/search_screen.dart';
 import 'package:kp_music/widget/mini_player.dart';
+import 'package:kp_music/widget/recently_played_widget.dart';
+import 'package:kp_music/widget/shimmer_widget.dart';
+import 'package:kp_music/widget/song_card.dart';
 import 'package:kp_music/widget/song_list.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 import '../providers/video_provider.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   final AudioPlayer audioPlayer;
-  const HomeScreen({required this.audioPlayer, Key? key}) : super(key: key);
+  const HomeScreen({required this.audioPlayer, super.key});
 
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
@@ -36,17 +42,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
     // video = null;
     super.initState();
+    Future.microtask(() => ref.read(userProvider.notifier).getUser());
+    Future.microtask(() => ref.read(userProvider.notifier).getSongHistory());
   }
 
   @override
   Widget build(BuildContext context) {
     final video = ref.watch(videoProvider);
+    final userState = ref.watch(userProvider);
+
     return Scaffold(
       body: NestedScrollView(
         floatHeaderSlivers: true,
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar(
             floating: true,
+            title: Text(
+              userState.user?.name ?? "User",
+              style: const TextStyle(color: Colors.white),
+            ),
             actions: [
               IconButton(
                 icon: const Icon(Icons.search),
@@ -63,7 +77,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               IconButton(
                 onPressed: () {
-                  FirebaseAuth.instance.signOut();
+                  ref.read(authProvider.notifier).logout();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return AuthScreen(audioPlayer: widget.audioPlayer);
+                      },
+                    ),
+                  );
                 },
                 icon: const Icon(Icons.logout_rounded),
               ),
@@ -72,13 +94,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ],
         body: ListView(
           children: [
+            if (userState.songHistory != null)
+              RecentlyPlayedWidget(audioPlayer: widget.audioPlayer),
+
+            // Vertical SongList items
             for (int index = 0; index < playListIds.length; index++)
               SizedBox(
                 height: 260,
                 child: SongList(
                   playListId: playListIds[index],
                   audioPlayer: widget.audioPlayer,
-                  // updateMiniPlayer: _updateMiniPlayer,
                 ),
               ),
           ],

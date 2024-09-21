@@ -55,6 +55,7 @@ class _MusicScreenState extends ConsumerState<MusicScreen> {
     );
     widget.audioPlayer.setAudioSource(audioSource);
     widget.audioPlayer.play();
+    ref.read(videoProvider.notifier).updateSongHistory();
     // updateMiniPlayer(video!);
   }
 
